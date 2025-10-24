@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advocacia Moderna | Minimalista</title>
+    
+    <!-- Carrega o Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Carrega a fonte Inter (moderna e minimalista) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Ícones (usados para os botões do carrossel e fechar modal) - CORRIGIDO -->
+    <script src="https://unpkg.com/lucide@0.395.0/dist/umd/lucide.js"></script>
+    
+    <style>
+        /* Define a fonte Inter como padrão */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Estilos para o carrossel */
+        .carousel-slider {
+            transition: transform 0.5s ease-in-out;
+        }
+
+        /* Container responsivo para vídeo (proporção 16:9) */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            overflow: hidden;
+            width: 100%;
+            border-radius: 0.5rem; /* 8px */
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Custom scrollbar para o modal (minimalista) */
+        #modalContentContainer::-webkit-scrollbar {
+            width: 6px;
+        }
+        #modalContentContainer::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1; /* gray-300 */
+            border-radius: 3px;
+        }
+        #modalContentContainer::-webkit-scrollbar-track {
+            background-color: #f1f5f9; /* gray-100 */
+        }
+
+        /* === ESTILOS DO CHATBOT === */
+        #chat-messages {
+            scroll-behavior: smooth;
+        }
+        .chat-message {
+            max-width: 85%;
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            line-height: 1.5;
+            word-wrap: break-word;
+            white-space: pre-line; /* Para renderizar quebras de linha */
+        }
+        .user-message {
+            background-color: #1f2937; /* bg-gray-800 */
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 0.25rem;
+        }
+        .bot-message {
+            background-color: #f3f4f6; /* bg-gray-100 */
+            color: #1f2937; /* text-gray-800 */
+            margin-right: auto;
+            border-bottom-left-radius: 0.25rem;
+        }
+        .error-message {
+            background-color: #fee2e2; /* bg-red-100 */
+            color: #b91c1c; /* text-red-800 */
+        }
+        .loader {
+            border: 4px solid #f3f4f6; /* bg-gray-100 */
+            border-top: 4px solid #1f2937; /* bg-gray-800 */
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <!-- === HEADER (Navegação) === -->
+    <header class="bg-white shadow-sm sticky top-0 z-40">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo ou Título do Site -->
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="font-bold text-xl text-gray-800">Justiça Clara</span>
+                </div>
+                <!-- Links de Navegação -->
+                <div class="hidden sm:block sm:ml-6">
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium" aria-current="page">Início</a>
+                        <a href="#articles" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Artigos</a>
+                        <!-- Atualizado href para #sobre-nos -->
+                        <a href="#sobre-nos" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Sobre</a>
+                        <a href="#contato" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Contato</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- === MAIN CONTENT === -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- === SEÇÃO CARROSSEL === -->
+        <section id="carousel" class="mb-16 bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+            <div class="relative">
+                <!-- Container do Slider (onde as imagens se movem) -->
+                <div class="overflow-hidden">
+                    <div id="carousel-slider" class="carousel-slider flex">
+                        <!-- Slide 1 -->
+                        <div class="carousel-item flex-none w-full">
+                            <img src="/imagens/Democracia Conectada Reflexões sobre Direitos Fundamentais e Inclusão Digital.png" alt="[Imagem de escritório moderno]" class="w-full h-auto object-cover md:h-[500px]">
+                        </div>
+                        <!-- Slide 2 -->
+                        <div class="carousel-item flex-none w-full">
+                            <img src="/imagens/Uso ético e responsável das ferramentas tecnológicas.png" alt="[Imagem de balança da justiça]" class="w-full h-auto object-cover md:h-[500px]">
+                        </div>
+                        <!-- Slide 3 -->
+                        <div class="carousel-item flex-none w-full">
+                            <img src="/imagens/apresentação.jpg" alt="[Imagem de pessoas em reunião]" class="w-full h-auto object-cover md:h-[500px]">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botões de Navegação do Carrossel -->
+                <button id="prevBtn" class="absolute top-1/2 left-4 -translate-y-1/2 bg-white/70 hover:bg-white rounded-full p-2 shadow-md transition-colors">
+                    <i data-lucide="chevron-left" class="text-gray-800"></i>
+                </button>
+                <button id="nextBtn" class="absolute top-1/2 right-4 -translate-y-1/2 bg-white/70 hover:bg-white rounded-full p-2 shadow-md transition-colors">
+                    <i data-lucide="chevron-right" class="text-gray-800"></i>
+                </button>
+            </div>
+
+            <!-- Descrições do Carrossel -->
+            <div class="p-6 bg-white">
+                <!-- Descrição 1 -->
+                <div class="carousel-description">
+                    <h3 class="text-xl font-semibold text-gray-800">Democracia Conectada: Reflexões sobre Direitos Fundamentais e Inclusão Digital</h3>
+                    <p class="text-gray-600 mt-2">eflexões sobre Direitos Fundamentais e Inclusão Digital tem como objetivo promover o entendimento crítico sobre os impactos da tecnologia na cidadania e na democracia. A iniciativa busca discutir como a era digital influencia o exercício dos direitos fundamentais, especialmente em temas como privacidade, liberdade de expressão, proteção de dados e acesso à informação. Por meio de ações educativas, debates e atividades de extensão, o projeto incentiva o uso ético e consciente das ferramentas digitais, fortalecendo a inclusão social e o papel da universidade na formação de cidadãos ativos, informados e comprometidos com a defesa da democracia e dos direitos humanos na sociedade conectada.</p>
+                </div>
+                <!-- Descrição 2 -->
+                <div class="carousel-description hidden">
+                    <h3 class="text-xl font-semibold text-gray-800">Uso ético e responsável das ferramentas tecnológicas</h3>
+                    <p class="text-gray-600 mt-2">O uso ético e responsável das ferramentas tecnológicas consiste em compreender e aplicar valores como respeito, privacidade, transparência e responsabilidade nas interações digitais. Esse princípio busca garantir que a tecnologia seja utilizada para o bem coletivo, promovendo a cidadania, a segurança da informação e a inclusão social. Envolve refletir sobre o impacto das ações no ambiente virtual, combater a desinformação, preservar dados pessoais e agir com consciência nas redes. Assim, o uso ético da tecnologia contribui para uma sociedade digital mais justa, segura e democrática.</p>
+                </div>
+                <!-- Descrição 3 -->
+                <div class="carousel-description hidden">
+                    <h3 class="text-xl font-semibold text-gray-800">Levando conhecimentos aos jovens</h3>
+                    <p class="text-gray-600 mt-2">Levamos conhecimentos importantes aos jovens para ajudá-los a entender melhor seus direitos e deveres. Falamos sobre Direito, para que saibam como a lei protege cada pessoa; inclusão digital, para que todos possam usar a tecnologia e a internet de forma justa; e Direito Digital, mostrando como se proteger online e usar a internet de forma segura e responsável. Essa combinação ajuda os jovens a se tornarem cidadãos mais conscientes, críticos e preparados para o mundo digital.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- === SEÇÃO ARTIGOS === -->
+        <section id="articles">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Nossos Artigos</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Artigo 1: Direito da Mulher -->
+                <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col">
+                    <img src="/imagens/Apresentação básica moderna e ilustrada vermelho e amarelo.png" alt="[Imagem sobre direito da mulher]" class="w-full h-48 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Transformações Sociais e Jurídicas na Sociedade da Informação</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">Sociedade da informação. Direito digital. Transformações sociais. Tecnologia. Cidadania.</p>
+                        <button 
+                            class="open-modal-btn mt-auto w-full bg-gray-800 text-white px-4 py-2 rounded-md font-medium hover:bg-gray-700 transition-colors"
+                            data-title="Transformações Sociais e Jurídicas na Sociedade da Informação por: Nicoly Case"
+                            data-content="Nas últimas décadas, a sociedade passou por uma profunda revolução impulsionada pela tecnologia da informação e comunicação. O acesso em massa à internet, a digitalização dos serviços e o surgimento das redes sociais transformaram as formas de interação social, econômica e política. Esse novo cenário, denominado sociedade da informação, desafia o Direito e as instituições sociais a repensarem conceitos tradicionais de cidadania, privacidade e responsabilidade. O objetivo deste trabalho é refletir sobre essas transformações e compreender de que forma o ordenamento jurídico e a sociedade civil podem atuar para garantir a proteção de direitos e o fortalecimento da democracia no ambiente digital. A sociedade da informação caracteriza-se pela centralidade do conhecimento e do fluxo de dados na organização social e econômica. Nesse contexto, o acesso à informação tornou-se um fator determinante para a inclusão e a participação cidadã. Contudo, a mesma tecnologia que promove a conectividade também intensifica riscos como vigilância, desinformação e violação de privacidade. Do ponto de vista jurídico, observa-se um esforço crescente para adaptar as normas às novas realidades tecnológicas. No Brasil, a promulgação do Marco Civil da Internet (Lei nº 12.965/2014) e da Lei Geral de Proteção de Dados (Lei nº 13.709/2018) representou avanços significativos na proteção de direitos digitais e na regulação do uso de dados pessoais. Essas legislações refletem a necessidade de equilíbrio entre liberdade de expressão, segurança e privacidade. Além disso, as transformações sociais decorrentes da digitalização alteram as formas de trabalho, consumo e participação política. O direito do trabalho, por exemplo, enfrenta desafios diante da economia de plataformas e do teletrabalho, enquanto o direito penal precisa lidar com novas modalidades de crime cibernético. A sociedade da informação representa um marco na evolução social e jurídica, exigindo adaptações constantes e uma postura ética diante das inovações tecnológicas. É essencial que o Direito acompanhe essas mudanças, garantindo que os avanços digitais contribuam para a inclusão, a cidadania e o respeito aos direitos humanos. Assim, a transformação digital deve ser compreendida como oportunidade de fortalecimento democrático e não como ameaça às liberdades fundamentais."
+                            data-video-url="https://www.youtube.com/embed/AU5okoaB4Mg"
+                        >
+                            Leia Mais
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Artigo 2: Direito da Criança -->
+                <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col">
+                    <img src="/imagens/Apresentação básica moderna e ilustrada vermelho e amarelo (1).png" alt="[Imagem sobre direito da criança]" class="w-full h-48 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">PRIVACIDADE E PROTEÇÃO DE DADOS (LGPD)</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">Informação. Proteção. Privacidade. Necessidade. Segurança Digital.</p>
+                        <button 
+                            class="open-modal-btn mt-auto w-full bg-gray-800 text-white px-4 py-2 rounded-md font-medium hover:bg-gray-700 transition-colors"
+                            data-title="PRIVACIDADE E PROTEÇÃO DE DADOS (LGPD) por: Raynara Ruana Marculino de Medeiros"
+                            data-content="É indiscutível que no contexto contemporâneo muitas pessoas são vítimas de ataques virtuais, invasão de dados, clonagem, e o cyberbullying que são resultados do mau gerenciamento em plataformas sociais de internet. Desse modo, aquilo que veio para viabilizar e acelerar os processos humanos, tornou-se um mais um meio de praticar crimes e infrações, como é o caso de redes sociais, sites e todos os meios virtuais de modo geral. De tal modo, o Direito enquanto defensor das garantias sociais, não é distante de tal problemática, tendo o poder-dever de intervir para sanar ou ao menos diminuir os transtornos resultantes da falta de legislação para tais casos. Dando seguimento, após enxergar a deficiência de normas que regulam as navegações virtuais, o Poder Legislativo adentrou na problemática trazendo as seguintes resoluções: Lei n° 13.709/2018, foi promulgada para proteger os direitos fundamentais de liberdade e de privacidade, e a livre formação da personalidade de cada indivíduo. A Lei fala sobre o tratamento de dados pessoais, dispostos em meio físico ou digital, feito por pessoa física ou jurídica de direito público ou privado, englobando um amplo conjunto de operações que podem ocorrer em meios manuais ou digitais. Art. 1º Esta Lei dispõe sobre o tratamento de dados pessoais, inclusive nos meios digitais, por pessoa natural ou por pessoa jurídica de direito público ou privado, com o objetivo de proteger os direitos fundamentais de liberdade e de privacidade e o livre desenvolvimento da personalidade da pessoa natural. (LGPD - Lei Geral de Proteção de Dados, art. 1º) Lei nº 12.965, de 23 de abril de 2014 - Marco Civil da Internet - Estabelece princípios, garantias, direitos e deveres para o uso da Internet no Brasil. Tais dispositivos servem como a base do direito virtual individual, assim também para direitos coletivos de comunidades que atuam através da internet. De tal modo, também surgiu a necessidade de uma lei que penalizasse o invasor de dispositivos informáticos após o caso Carolina Dieckmann que ocorreu no ano de 2011: Em 2011, a atriz Carolina Dieckmann teve sua intimidade violada após um grupo de hackers invadir seu computador pessoal e divulgar sem autorização 36 imagens íntimas pelas redes sociais. Além das fotos roubadas, a atriz chegou a receber ameaças e extorsões para evitar a exposição. Art. 154-A. Invadir dispositivo informático alheio, conectado ou não à rede de computadores, mediante violação indevida de mecanismo de segurança e com o fim de obter, adulterar ou destruir dados ou informações sem autorização expressa ou tácita do titular do dispositivo ou instalar vulnerabilidades para obter vantagem ilícita: (Lei 12.737/12, art. 154-A) Em vigor a 10 anos, a Lei Carolina Dieckmann é considerada a principal ferramenta legal para a segurança virtual dos brasileiros, como afirma o defensor público Aldemar Monteiro, supervisor das Defensorias Criminais em Fortaleza. “A lei trouxe uma ferramenta a mais para punição dos crimes informáticos, porque antes o [mecanismo] que tínhamos tratava-os apenas como atos preparatórios. Antes, só o fato de você ter acesso ao dispositivo não era considerado crime. Com o advento da lei, isso passou a ser crime”, explica. Portanto, conclui-se que o Direito está cada vez mais presente na sociedade, bem como nos meios virtuais utilizados por ela, visando minimizar os impactos do mau uso da internet. Logo, a sociedade precisa conhecer todos os meios disponíveis para não sofrer com violações e não exposições desnecessárias, assumindo a posse das garantias que uma vez já foram fixadas pelo legislador. Entretanto, no que concerne ao conhecimento do aparato legislativo, a comunidade ainda enfrenta com os impactos da falta de informação e sabedoria para usar das leis a seu favor, a fim de que não venha mais sofrer crimes cibernéticos que infelizmente vêm sendo cada vez mais crescentes. Mesmo que o senso comum aponte que os mais vulneráveis estariam mais expostos a golpes virtuais, especialmente os idosos, as pesquisas não comprovam isso. No ano passado, uma ampla consulta do DataSenado, que entrevistou quase 22 mil pessoas, indicou que os mais afetados são jovens entre 16 e 29 anos, que correspondem a 27% das vítimas. A faixa com mais de 60 anos, considerada vulnerável por ter migrado para uma realidade totalmente nova, digital, já na idade adulta, representa 16% delas, como diz a Agência Senado."
+                            data-video-url="https://www.youtube.com/embed/iUMktd--uXA"
+                        >
+                            Leia Mais
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Artigo 3: Direito do Consumidor -->
+                <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col">
+                    <img src="/imagens/Relação entre Universidade e Sociedade.png" alt="[Imagem sobre direito do consumidor]" class="w-full h-48 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Relação entre Universidade e Sociedade</h3>
+                        <p class="text-gray-600 mb-4 flex-grow"> Universidade. Sociedade. Educação. Extensão. Cidadania.</p>
+                        <button 
+                            class="open-modal-btn mt-auto w-full bg-gray-800 text-white px-4 py-2 rounded-md font-medium hover:bg-gray-700 transition-colors"
+                            data-title="Relação entre Universidade e Sociedade por: Heloisa Santos"
+                            data-content="A universidade é uma instituição essencial na construção de uma sociedade mais justa, crítica e desenvolvida. Mais do que um espaço de formação profissional, ela exerce função social ao produzir conhecimento científico e cultural voltado à realidade social. A interação entre universidade e sociedade possibilita o fortalecimento de políticas públicas, o desenvolvimento regional e a ampliação da consciência cidadã. A relação entre universidade e sociedade manifesta-se por meio do ensino, da pesquisa e da extensão, os três pilares que sustentam a educação superior. O ensino forma profissionais capacitados e éticos, a pesquisa gera novos conhecimentos e inovações, e a extensão aproxima o saber acadêmico das comunidades, promovendo a troca de experiências e o compromisso social. A extensão universitária, em especial, representa um canal direto de diálogo com a sociedade, permitindo que os estudantes apliquem o que aprendem de forma prática e solidária. Projetos de extensão, oficinas, assessorias jurídicas populares e ações culturais exemplificam como o conhecimento pode gerar impacto social e reduzir desigualdades. Além disso, a universidade deve estimular a reflexão crítica e o engajamento político dos alunos, formando sujeitos conscientes de seu papel na transformação social. Inspirada em pensadores como Paulo Freire e Boaventura de Sousa Santos, a educação universitária deve ser libertadora, democrática e voltada para a construção de um saber coletivo e emancipador. A relação entre universidade e sociedade é indispensável para o avanço do conhecimento e para o desenvolvimento humano. Ao integrar ensino, pesquisa e extensão, as instituições de ensino superior fortalecem a democracia e promovem uma formação ética e solidária. Portanto, a universidade deve continuar comprometida com a transformação social, atuando como espaço de diálogo, reflexão e ação cidadã, contribuindo para o bem comum e para o progresso coletivo."
+                            data-video-url="https://www.youtube.com/embed/zAD6x1mD054"
+                        >
+                            Leia Mais
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col">
+                    <img src="/imagens/Cidadania Digital e Participação Social.png" alt="[Imagem sobre direito do consumidor]" class="w-full h-48 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Cidadania Digital e Participação Social</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">Cidadania digital. Participação social. Ética. Tecnologia. Democracia.</p>
+                        <button 
+                            class="open-modal-btn mt-auto w-full bg-gray-800 text-white px-4 py-2 rounded-md font-medium hover:bg-gray-700 transition-colors"
+                            data-title="Cidadania Digital e Participação Social por: Heloisa Santos"
+                            data-content="A transformação digital tem impactado profundamente as relações sociais, políticas e econômicas. O acesso à informação e às redes sociais ampliou as possibilidades de comunicação e de participação pública, mas também trouxe novos desafios, como a disseminação de notícias falsas, o discurso de ódio e a exclusão digital. Nesse contexto, surge a necessidade de promover uma cidadania digital, que compreende o uso ético, crítico e responsável das tecnologias, bem como o fortalecimento da participação social através dos meios digitais. A cidadania digital está relacionada ao exercício dos direitos e deveres do cidadão no ambiente virtual. Assim como na vida offline, é fundamental agir com respeito, responsabilidade e consciência, garantindo que o espaço digital seja um local de diálogo e construção coletiva. A participação social por meio das plataformas digitais tem se tornado um instrumento poderoso para o fortalecimento da democracia. As redes sociais, fóruns, aplicativos governamentais e consultas públicas online são exemplos de ferramentas que possibilitam ao cidadão expressar opiniões, fiscalizar políticas públicas e contribuir para decisões coletivas. Contudo, o exercício pleno da cidadania digital depende do acesso igualitário às tecnologias e de uma educação digital de qualidade. É essencial que escolas e universidades formem indivíduos capazes de interpretar criticamente as informações que consomem e produzem, respeitando os direitos humanos e promovendo a inclusão digital. Autores como Pierre Lévy e Manuel Castells destacam que a sociedade em rede exige uma nova forma de consciência cidadã, na qual o sujeito não é apenas consumidor de informação, mas também produtor ativo de conhecimento e agente de transformação social. A cidadania digital e a participação social são pilares fundamentais da democracia contemporânea. Ao compreender o poder das tecnologias e das redes de informação, o cidadão moderno deve agir de forma ética e colaborativa, contribuindo para uma sociedade mais justa e informada. Cabe à educação, à família e ao Estado promover a inclusão digital e incentivar o uso consciente da internet, garantindo que todos possam exercer plenamente seus direitos no mundo virtual."
+                            data-video-url="https://www.youtube.com/embed/s5HIYG2POiw"
+                        >
+                            Leia Mais
+                        </button>
+                    </div>
+                </div>
+
+                 <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col">
+                    <img src="/imagens/Educação para os Direitos Humanos e Consciência Crítica.png" alt="[Imagem sobre direito do consumidor]" class="w-full h-48 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Educação para os Direitos Humanos e Consciência Crítica</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">Educação. Direitos humanos. Consciência crítica. Cidadania. Ética.</p>
+                        <button 
+                            class="open-modal-btn mt-auto w-full bg-gray-800 text-white px-4 py-2 rounded-md font-medium hover:bg-gray-700 transition-colors"
+                            data-title="Educação para os Direitos Humanos e Consciência Crítica por: Dhébora Rodrigues Ferreira Gomes"
+                            data-content="A sociedade atual enfrenta desafios complexos relacionados à desigualdade social, à intolerância e à violação de direitos fundamentais. Nesse cenário, a educação para os direitos humanos surge como uma ferramenta essencial para a construção de uma cultura democrática e inclusiva. Mais do que transmitir conteúdos, a educação tem o papel de formar cidadãos críticos, conscientes de seus direitos e deveres, e capazes de agir eticamente na transformação do meio em que vivem. A Declaração Universal dos Direitos Humanos (1948) reconhece a educação como um direito fundamental e um meio para promover o respeito universal aos direitos e liberdades. No Brasil, a Lei de Diretrizes e Bases da Educação Nacional (LDB nº 9.394/1996) e o Plano Nacional de Educação em Direitos Humanos (2003) reforçam a importância de integrar os princípios de igualdade, diversidade e justiça social ao processo educacional. A educação para os direitos humanos não deve restringir-se a disciplinas específicas, mas deve perpassar todas as áreas do conhecimento, promovendo uma formação integral que valorize o diálogo, a empatia e a reflexão crítica. Nesse sentido, o papel do educador é central: ele deve atuar como mediador, incentivando o pensamento autônomo e o compromisso com o bem comum. Além do ambiente escolar, a construção da consciência crítica depende também do engajamento social e da vivência comunitária. Projetos de extensão, atividades culturais e práticas participativas reforçam a noção de pertencimento e responsabilidade coletiva. Inspirada em autores como Paulo Freire, a educação libertadora estimula o estudante a questionar a realidade e a agir para transformá-la, combatendo todas as formas de opressão e exclusão. Assim, a educação em direitos humanos contribui não apenas para o aprendizado cognitivo, mas também para o desenvolvimento ético e político do indivíduo, formando cidadãos comprometidos com a justiça e a dignidade humana. Educar para os direitos humanos significa promover a transformação social por meio da valorização da dignidade e da igualdade entre as pessoas. A consciência crítica, quando desenvolvida desde os primeiros anos escolares, fortalece a democracia e combate a indiferença diante das injustiças. Portanto, é dever das instituições educacionais, dos educadores e da sociedade como um todo cultivar uma cultura de paz, respeito e solidariedade, consolidando os direitos humanos como prática cotidiana e não apenas como ideal teórico."
+                            data-video-url="https://www.youtube.com/embed/sondx-B5dR8"
+                        >
+                            Leia Mais
+                        </button>
+                    </div>
+                </div>
+
+                 <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col">
+                    <img src="/imagens/Liberdade de expressão nas plataformas digitais..png" alt="[Imagem sobre direito do consumidor]" class="w-full h-48 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Liberdade de expressão nas plataformas digitais.</h3>
+                        <p class="text-gray-600 mb-4 flex-grow"> liberdade de expressão, plataformas digitais, moderação, direitos fundamentais, responsabilidade digital.</p>
+                        <button 
+                            class="open-modal-btn mt-auto w-full bg-gray-800 text-white px-4 py-2 rounded-md font-medium hover:bg-gray-700 transition-colors"
+                            data-title="Liberdade de expressão nas plataformas digitais por: Venâncio Gouveia da Silva"
+                            data-content="Com o avanço da tecnologia e a crescente popularização das plataformas digitais, a liberdade de expressão assumiu nova dimensão, tornando-se um dos pilares da democracia digital. Todavia, a ampliação dos canais comunicacionais trouxe desafios inéditos, sobretudo relacionados à moderação e à responsabilidade no ambiente virtual. Este artigo busca discutir esses desafios à luz dos marcos legais vigentes, destacando a importância da preservação do direito à livre manifestação, sem negligenciar a proteção contra abusos e violação de direitos alheios. As plataformas digitais ampliaram o acesso à expressão pública, democratizando a comunicação para os mais variados segmentos da sociedade. No entanto, a ausência de regulação clara e equilibrada resultou em conflitos entre a liberdade de expressão e a necessidade de conter práticas nocivas, como discursos de ódio, fake news e outras formas de abuso. O Marco Civil da Internet e a LGPD são marcos legais essenciais para delimitar responsabilidades, orientando como as plataformas devem agir para garantir a segurança dos usuários sem violar direitos fundamentais.A moderação de conteúdo, ainda que necessária, enfrenta críticas pela falta de transparência e por possíveis excessos que podem limitar injustamente a expressão legítima. Os algoritmos que controlam o fluxo de informações precisam ser mais compreensíveis e submetidos a mecanismos de controle para evitar censuras arbitrárias. A educação digital emerge como um fator decisivo para capacitar os usuários a entenderem e exercerem sua liberdade de expressão de maneira consciente e responsável. A liberdade de expressão nas plataformas digitais apresenta um campo de tensões entre direitos fundamentais e responsabilidades sociais. Para promover um ambiente digital saudável, é imprescindível o desenvolvimento de políticas públicas que incentivem práticas responsáveis, aliadas a uma regulação equilibrada e à educação para o uso crítico das tecnologias. Assim, será possível garantir que a liberdade de expressão continue a ser um instrumento de fortalecimento democrático e não um facilitador de abusos e desinformação."
+                            data-video-url="https://www.youtube.com/embed/GdGjYiw4O-4"
+                        >
+                            Leia Mais
+                        </button>
+                    </div>
+                </div>
+
+                 <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col">
+                    <img src="/imagens/DIREITOS FUNDAMENTAIS NA ERA DIGITAL.png" alt="[Imagem sobre direito do consumidor]" class="w-full h-48 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">DIREITOS FUNDAMENTAIS NA ERA DIGITAL</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">Direitos Fundamentais; Era Digital; Cidadania Digital; Privacidade; Liberdade de Expressão; Inclusão Digital; Tecnologia da Informação.</p>
+                        <button 
+                            class="open-modal-btn mt-auto w-full bg-gray-800 text-white px-4 py-2 rounded-md font-medium hover:bg-gray-700 transition-colors"
+                            data-title="DIREITOS FUNDAMENTAIS NA ERA DIGITAL por: Mateus Isac Muniz Velez dos Santos"
+                            data-content="Os direitos fundamentais são aqueles reconhecidos e protegidos pela Constituição como essenciais à dignidade da pessoa humana, à liberdade e à igualdade. Eles garantem a participação dos indivíduos na vida política, social e econômica, assegurando condições mínimas para o pleno desenvolvimento da personalidade. A Constituição Federal de 1988 representa um marco na consolidação desses direitos no Brasil, abrangendo desde as liberdades individuais até os direitos sociais e coletivos. No entanto, com o avanço da tecnologia, novas formas de violação e ameaça surgiram, exigindo constante atualização jurídica e social para garantir sua efetividade. A era digital é caracterizada pela integração de tecnologias da informação e comunicação em praticamente todos os aspectos da vida humana. O acesso à internet, às redes sociais e às plataformas digitais transformou a maneira como os indivíduos se relacionam, consomem conteúdo e participam da sociedade. Essas mudanças trouxeram benefícios, como o acesso ampliado ao conhecimento e a democratização da informação. Contudo, também intensificaram desafios relacionados à privacidade, ao uso indevido de dados, à desinformação e à exclusão digital. Nesse cenário, a efetivação dos direitos fundamentais assume um papel ainda mais relevante. A privacidade é um dos direitos mais impactados na era digital. A coleta e o tratamento de dados pessoais por empresas e governos tornaram-se práticas comuns. A Lei Geral de Proteção de Dados (LGPD) surge como instrumento essencial para garantir a transparência e o controle do cidadão sobre suas informações. A internet ampliou a liberdade de expressão, permitindo que qualquer indivíduo manifeste suas opiniões publicamente. No entanto, o fenômeno das fake news e dos discursos de ódio coloca em risco a convivência democrática e os direitos de terceiros, exigindo regulamentação e responsabilidade. A exclusão digital ainda é um problema relevante. O acesso desigual às tecnologias limita a participação de parte da população na sociedade da informação. Assim, políticas públicas de inclusão digital tornam-se essenciais para garantir o princípio da igualdade material. Os principais desafios da era digital envolvem o equilíbrio entre inovação e proteção dos direitos humanos. Questões como segurança cibernética, vigilância estatal, manipulação de algoritmos e uso ético da inteligência artificial demandam reflexão jurídica e social constante. A proteção dos direitos fundamentais deve acompanhar a velocidade da evolução tecnológica. É necessário repensar o papel do Estado, das empresas e dos cidadãos na construção de um ambiente digital justo, seguro e democrático. Os direitos fundamentais continuam sendo a base da convivência humana, mesmo em um mundo digitalizado. Contudo, sua proteção exige novas interpretações e mecanismos adaptados à realidade tecnológica. A era digital oferece oportunidades inéditas de exercício da cidadania, mas também impõe riscos que precisam ser enfrentados com responsabilidade, ética e consciência coletiva. Fortalecer a cidadania digital é, portanto, essencial para preservar a liberdade, a igualdade e a dignidade humana no século XXI."
+                            data-video-url="https://www.youtube.com/embed/r-YwiW9hO6U"
+                        >
+                            Leia Mais
+                        </button>
+                    </div>
+                </div>
+
+                 <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col">
+                    <img src="/imagens/Impactos da tecnologia na cidadania e na democracia.png" alt="[Imagem sobre direito do consumidor]" class="w-full h-48 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Impactos da tecnologia na cidadania e na democracia</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">Tecnologia; Cidadania; Democracia; Inclusão Digital; Sociedade da Informação.</p>
+                        <button 
+                            class="open-modal-btn mt-auto w-full bg-gray-800 text-white px-4 py-2 rounded-md font-medium hover:bg-gray-700 transition-colors"
+                            data-title="Impactos da tecnologia na cidadania e na democracia por: Mateus Isac Muniz Velez dos Santos"
+                            data-content="A tecnologia transformou radicalmente o modo como os indivíduos se relacionam, produzem conhecimento e participam da vida pública. As redes digitais ampliaram o acesso à informação e criaram novas formas de interação social e política. No entanto, o avanço tecnológico também trouxe desafios significativos à cidadania e à democracia, como a disseminação de notícias falsas, o uso indevido de dados pessoais e o aumento da polarização social. Dessa forma, compreender o papel da tecnologia na construção e no fortalecimento da cidadania torna-se fundamental para a manutenção dos valores democráticos. A reflexão sobre o tema é necessária para identificar como as inovações digitais podem ser utilizadas de forma ética e inclusiva, contribuindo para o exercício consciente dos direitos e deveres dos cidadãos. O uso das tecnologias da informação e comunicação (TICs) possibilitou um novo modelo de engajamento social e político. Plataformas digitais e redes sociais tornaram-se espaços de mobilização popular, permitindo que cidadãos expressem opiniões, participem de debates e fiscalizem ações governamentais em tempo real. A chamada cidadania digital surge nesse contexto como a prática do exercício dos direitos e deveres no ambiente virtual. Ela envolve o uso responsável e ético da tecnologia para promover o diálogo, a inclusão e o respeito à diversidade. Dessa forma, a tecnologia pode ser vista como uma ferramenta de empoderamento social e de ampliação da participação democrática. Embora as tecnologias digitais tenham democratizado o acesso à informação, elas também criaram novos riscos para a democracia. O fenômeno das fake news, a manipulação de algoritmos e o uso indevido de dados pessoais interferem diretamente na formação da opinião pública e na tomada de decisões políticas. Além disso, a exclusão digital representa um obstáculo à igualdade cidadã. Milhões de pessoas ainda não têm acesso à internet ou às competências digitais necessárias para participar plenamente da vida pública online. Essa desigualdade tecnológica aprofunda as disparidades sociais e limita o exercício da cidadania. Outro desafio é a privatização do espaço público digital, em que grandes corporações controlam o fluxo de informações e moldam comportamentos por meio de estratégias de marketing e vigilância algorítmica. Isso coloca em risco a liberdade individual e o pluralismo de ideias, valores fundamentais da democracia. Para que a tecnologia contribua efetivamente com a democracia, é necessário promover a educação digital e a alfabetização midiática. Tais práticas capacitam os cidadãos a reconhecerem informações confiáveis, compreenderem seus direitos digitais e exercerem uma postura crítica diante das mídias. Além disso, políticas públicas de inclusão tecnológica são essenciais para garantir que todos tenham acesso às ferramentas digitais e possam participar da sociedade da informação. A integração entre Estado, escola e comunidade é um passo decisivo para transformar a tecnologia em instrumento de emancipação social e fortalecimento democrático. Os impactos da tecnologia na cidadania e na democracia são ambíguos: ao mesmo tempo em que possibilitam a ampliação da participação social, também criam novos mecanismos de controle e exclusão. Cabe à sociedade, por meio da educação e da consciência crítica, transformar as ferramentas digitais em instrumentos de liberdade, inclusão e justiça social. Assim, o desafio contemporâneo não é rejeitar a tecnologia, mas aprender a utilizá-la com responsabilidade e ética, assegurando que o progresso digital caminhe ao lado dos princípios democráticos e dos direitos fundamentais."
+                            data-video-url="https://www.youtube.com/embed/tTF-wsYxVEY"
+                        >
+                            Leia Mais
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- === NOVA SEÇÃO SOBRE NÓS === -->
+    <section id="sobre-nos" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Sobre Nós</h2>
+            <div class="bg-white p-8 rounded-lg shadow-sm border border-gray-200 text-left">
+                <p class="text-gray-700 leading-relaxed mb-4">
+                    Bem-vindo ao <strong>Justiça Clara</strong>. Nascemos do compromisso de promover uma sociedade mais consciente, democrática e inclusiva diante dos desafios da tecnologia. Acreditamos que compreender o impacto do mundo digital é essencial para fortalecer os direitos fundamentais e a participação cidadã.
+                </p>
+                <p class="text-gray-700 leading-relaxed mb-4">
+                    Nossa missão é unir conhecimento acadêmico e realidade social, aproximando universidade e comunidade. Buscamos incentivar o uso ético da tecnologia, a proteção da privacidade e o exercício responsável da liberdade de expressão, formando cidadãos críticos e engajados na defesa da democracia.
+                </p>
+                <p class="text-gray-700 leading-relaxed">
+                    Seja participando de nossas oficinas, debates ou atividades educativas, estamos aqui para construir juntos uma cultura digital mais justa, segura e cidadã.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- === SEÇÃO DE CONTATO === -->
+    <section id="contato" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Entre em Contato</h2>
+        
+        <!-- Conteúdo de Contato Simplificado -->
+        <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-sm border border-gray-200">
+            <p class="text-center text-gray-600 mb-8">
+                Estamos à disposição para ajudar. Entre em contato conosco através dos canais abaixo.
+            </p>
+            
+            <div class="space-y-6">
+                <!-- Email -->
+                <div class="flex items-center space-x-3">
+                    <i data-lucide="mail" class="w-5 h-5 text-gray-700 flex-shrink-0"></i>
+                    <a href="mailto:extensaojusticaclara@gmail.com" class="text-lg text-gray-800 hover:text-gray-600 break-all">
+                        extensaojusticaclara@gmail.com
+                    </a>
+                </div>
+                
+                <!-- Telefone -->
+                <div class="flex items-center space-x-3">
+                    <i data-lucide="phone" class="w-5 h-5 text-gray-700 flex-shrink-0"></i>
+                    <span class="text-lg text-gray-800">
+                        +55 (83) 9-9415-3743
+                    </span>
+                </div>
+                
+                <!-- Localização -->
+                <div class="flex items-start space-x-3">
+                    <i data-lucide="map-pin" class="w-5 h-5 text-gray-700 flex-shrink-0 mt-1"></i>
+                    <span class="text-lg text-gray-800">
+                        Av. Pres. Epitácio Pessoa, 1213, Sala 612<br>Estados, João Pessoa - PB, 58039-000
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- === FOOTER === -->
+    <footer class="bg-white border-t border-gray-200 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
+            <p class="text-gray-500 text-sm">&copy; 2025 Justiça Clara. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+
+    <!-- === MODAL (POP-UP) DOS ARTIGOS === -->
+    <!-- Fica escondido ('hidden') por padrão -->
+    <div id="articleModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 hidden transition-opacity duration-300">
+        
+        <!-- Conteúdo do Modal -->
+        <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] flex flex-col">
+            
+            <!-- Header do Modal -->
+            <div class="flex justify-between items-center p-5 border-b border-gray-200">
+                <h2 id="modalTitle" class="text-2xl font-semibold text-gray-800">Título do Artigo</h2>
+                <button id="closeModal" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- Corpo do Modal (com scroll) -->
+            <div id="modalContentContainer" class="p-6 space-y-6 overflow-y-auto">
+                
+                <!-- Container do Vídeo -->
+                <div id="modalVideoContainer" class="video-container bg-gray-200">
+                    <!-- O iframe do YouTube será inserido aqui pelo JS -->
+                    <iframe 
+                        id="modalVideo"
+                        src="" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                
+                <!-- Texto do Artigo -->
+                <div>
+                    <p id="modalContent" class="text-gray-700 leading-relaxed whitespace-pre-line">
+                        Conteúdo do artigo...
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- === CHATBOT FAB (Botão Flutuante) === -->
+    <button id="chat-fab" class="fixed bottom-6 right-6 bg-gray-800 hover:bg-gray-700 text-white p-4 rounded-full shadow-xl transition-transform transform hover:scale-110 z-50">
+        <i data-lucide="message-circle" class="w-6 h-6"></i>
+    </button>
+
+    <!-- === JANELA DO CHATBOT === -->
+    <!-- Ajustado para ser 'muito menor': max-w-xs e max-h-[400px] -->
+    <div id="chat-window" class="fixed bottom-20 right-6 w-full max-w-xs h-full max-h-[70vh] md:max-h-[400px] bg-white rounded-lg shadow-xl border border-gray-200 flex flex-col z-50 hidden">
+        <!-- Header do Chat (O botão 'x' já está aqui) -->
+        <div class="flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+            <h3 class="font-semibold text-lg text-gray-800">Chat com Zé</h3>
+            <button id="close-chat-btn" class="text-gray-400 hover:text-gray-600">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        
+        <!-- Mensagens -->
+        <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-4">
+            <!-- Mensagem inicial do Bot -->
+            <div class="chat-message bot-message">
+                Olá! Eu sou o Zé. Como posso ajudar a encontrar informações em nosso site? (Lembre-se: não posso dar aconselhamento jurídico.)
+            </div>
+        </div>
+        
+        <!-- Loader (escondido por padrão) -->
+        <div id="chat-loader" class="p-4 border-t border-gray-100 flex justify-center hidden">
+            <div class="loader"></div>
+        </div>
+
+        <!-- Input -->
+        <form id="chat-form" class="p-4 border-t border-gray-200 flex space-x-2">
+            <input type="text" id="chat-input" placeholder="Digite sua mensagem..." class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800" autocomplete="off">
+            <button type="submit" class="bg-gray-800 text-white p-2 rounded-md hover:bg-gray-700 disabled:opacity-50" aria-label="Enviar mensagem">
+                <i data-lucide="send" class="w-5 h-5"></i>
+            </button>
+        </form>
+    </div>
+
+
+    <!-- === JAVASCRIPT === -->
+    <script>
+        // --- LÓGICA DO CARROSSEL ---
+        const carouselSlider = document.getElementById('carousel-slider');
+        const carouselItems = document.querySelectorAll('.carousel-item');
+        const carouselDescriptions = document.querySelectorAll('.carousel-description');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        
+        let currentSlide = 0;
+        const totalSlides = carouselItems.length;
+
+        function showSlide(index) {
+            // Garante que o índice esteja dentro dos limites (0 a totalSlides - 1)
+            currentSlide = (index + totalSlides) % totalSlides;
+
+            // Move o slider
+            carouselSlider.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+            // Atualiza as descrições
+            carouselDescriptions.forEach((desc, i) => {
+                if (i === currentSlide) {
+                    desc.classList.remove('hidden');
+                } else {
+                    desc.classList.add('hidden');
+                }
+            });
+        }
+
+        // Event Listeners dos botões
+        nextBtn.addEventListener('click', () => {
+            showSlide(currentSlide + 1);
+        });
+
+        prevBtn.addEventListener('click', () => {
+            showSlide(currentSlide - 1);
+        });
+
+        // Substitui os ícones do Lucide (incluindo os novos do chat)
+        showSlide(0);
+
+        // Opcional: Avançar slides automaticamente
+        setInterval(() => {
+            showSlide(currentSlide + 1);
+        }, 7000); // Muda a cada 7 segundos
+
+
+        // --- LÓGICA DO MODAL (POP-UP) ---
+        const modal = document.getElementById('articleModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        const openModalBtns = document.querySelectorAll('.open-modal-btn');
+        
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const modalVideo = document.getElementById('modalVideo');
+
+        // Função para abrir o modal
+        function openModal(title, content, videoUrl) {
+            modalTitle.textContent = title;
+            modalContent.textContent = content;
+            modalVideo.src = videoUrl; // Define a URL do vídeo no iframe
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Impede o scroll da página principal
+        }
+
+        // Função para fechar o modal
+        function closeModal() {
+            modal.classList.add('hidden');
+            modalVideo.src = ""; // Para o vídeo ao fechar
+            document.body.style.overflow = 'auto'; // Restaura o scroll
+        }
+
+        // Adiciona evento de clique para cada botão "Leia Mais"
+        openModalBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const title = btn.getAttribute('data-title');
+                const content = btn.getAttribute('data-content');
+                const videoUrl = btn.getAttribute('data-video-url');
+                openModal(title, content, videoUrl);
+            });
+        });
+
+        // Adiciona evento de clique no botão de fechar (X)
+        closeModalBtn.addEventListener('click', closeModal);
+
+        // Adiciona evento de clique fora do modal (no overlay) para fechar
+        modal.addEventListener('click', (e) => {
+            // Verifica se o clique foi no elemento de fundo (o overlay)
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+
+        // --- LÓGICA DO CHATBOT 'ZÉ' ---
+        
+        // Elementos do DOM
+        const chatFab = document.getElementById('chat-fab');
+        const chatWindow = document.getElementById('chat-window');
+        const closeChatBtn = document.getElementById('close-chat-btn');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatLoader = document.getElementById('chat-loader');
+        const chatSubmitBtn = chatForm.querySelector('button');
+
+        // Instrução do sistema para o Gemini (Persona do 'Zé')
+        const systemPrompt = "Você é 'Zé', um assistente virtual de IA amigável para o site de advocacia 'Justiça Clara'. Seu objetivo é ajudar os usuários a navegar no site e encontrar informações sobre os artigos (Direito da Mulher, Direito da Criança, etc.). Responda em português do Brasil. IMPORTANTE: Você NÃO PODE dar aconselhamento jurídico. Se alguém pedir conselho legal (ex: 'devo processar?', 'tenho um caso?', 'quais são meus direitos se...'), RECUSE educadamente e sugira que entrem em contato com um advogado do escritório para uma consulta formal. Mantenha as respostas curtas e diretas.";
+
+        // Histórico da conversa
+        let chatHistory = [
+            { 
+                role: "model", 
+                parts: [{ text: "Olá! Eu sou o Zé. Como posso ajudar a encontrar informações em nosso site? (Lembre-se: não posso dar aconselhamento jurídico.)" }] 
+            }
+        ];
+
+        // Abrir/Fechar janela do chat
+        chatFab.addEventListener('click', () => {
+            chatWindow.classList.toggle('hidden');
+            chatFab.classList.toggle('hidden');
+        });
+
+        closeChatBtn.addEventListener('click', () => {
+            chatWindow.classList.add('hidden');
+            chatFab.classList.remove('hidden');
+        });
+
+        // Enviar mensagem
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const userInput = chatInput.value.trim();
+            if (!userInput) return;
+
+            addMessageToUI(userInput, 'user');
+            chatHistory.push({ role: "user", parts: [{ text: userInput }] });
+            chatInput.value = '';
+            
+            callGeminiAPI();
+        });
+
+        // Adiciona mensagem à interface
+        function addMessageToUI(message, sender, isError = false) {
+            const newBubble = document.createElement('div');
+            newBubble.classList.add('chat-message');
+            newBubble.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+            
+            if (isError) {
+                newBubble.classList.add('error-message');
+            }
+
+            newBubble.textContent = message;
+            chatMessages.appendChild(newBubble);
+            
+            // Rola para a mensagem mais recente
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Mostra/Esconde o loader e desabilita o input
+        function setChatLoading(isLoading) {
+            if (isLoading) {
+                chatLoader.classList.remove('hidden');
+                chatInput.disabled = true;
+                chatSubmitBtn.disabled = true;
+            } else {
+                chatLoader.classList.add('hidden');
+                chatInput.disabled = false;
+                chatSubmitBtn.disabled = false;
+                chatInput.focus();
+            }
+        }
+
+        // Função de backoff exponencial para o fetch
+        async function fetchWithBackoff(url, options, retries = 3, delay = 1000) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    // Se a resposta não for ok, trata como um erro para tentar novamente
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                // Se acabaram as tentativas, joga o erro final
+                if (retries === 0) {
+                    console.error("Falha na API após múltiplas tentativas:", error);
+                    throw error;
+                }
+                
+                // Espera antes de tentar novamente
+                await new Promise(resolve => setTimeout(resolve, delay));
+                
+                // Tenta novamente com backoff
+                return fetchWithBackoff(url, options, retries - 1, delay * 2);
+            }
+        }
+
+        // Chama a API Gemini
+        async function callGeminiAPI() {
+            setChatLoading(true);
+
+            const apiKey = "AIzaSyD45SA91vc3AWpTmveCPL3rjVYLY8o9oXE"; // Deixe em branco, será tratado pelo ambiente
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: chatHistory,
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+            };
+
+            const fetchOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            };
+
+            try {
+                const result = await fetchWithBackoff(apiUrl, fetchOptions);
+                const candidate = result.candidates?.[0];
+                
+                let botResponse = "Desculpe, não consegui processar sua resposta. Tente novamente.";
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    botResponse = candidate.content.parts[0].text;
+                }
+
+                addMessageToUI(botResponse, 'bot');
+                chatHistory.push({ role: "model", parts: [{ text: botResponse }] });
+
+            } catch (error) {
+                console.error('Erro ao chamar a API Gemini:', error);
+                addMessageToUI("Desculpe, Zé está offline no momento. Tente mais tarde.", 'bot', true);
+            } finally {
+                setChatLoading(false);
+            }
+        }
+
+        // É importante chamar createIcons() DEPOIS que todo o HTML (incluindo o do chat)
+        // foi analisado pelo navegador. Mover a chamada original para o final
+        // garante que os ícones do modal E do chat sejam renderizados.
+        lucide.createIcons();
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
